@@ -9,10 +9,6 @@ const subjectchema = new mongoose.Schema({
         trim:true,
         index:true
     },
-    syllabus: {
-         type: String,
-          required: true
-         }, 
    
     units: [
         { 

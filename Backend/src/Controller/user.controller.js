@@ -3,6 +3,33 @@ import { User } from "../Models/user.model.js";
 import { ApiError } from "../Utils/apiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
 
+
+const generateAccessAndRefreshToken = async(userId)=>{
+    try {
+       const user = await User.findById(userId);
+       console.log(user);
+       
+      if (!user) {
+          throw new ApiError(404, "User not found");
+      }
+
+       const accessToken = user.generateAccessToken()
+       const refreshToken = user.generateRefreshToken()
+       console.log(accessToken);
+       console.log(refreshToken);
+       
+       
+       user.refreshToken=refreshToken
+      await user.save({validateBeforeSave: false})
+       console.log(user);
+       
+      return {accessToken,refreshToken}
+
+    } catch (error) {
+       throw new ApiError(500,"Unable to generate access and refresh token")
+    }
+}
+
 const registerUser = asyncHandler(async (req,res)=>{
    
    const{fullname,username,email,password}= req.body
@@ -130,5 +157,7 @@ const logOutUser = asyncHandler(async(req,res)=>{
     .clearCookie("refreshToken",options)
     .json(new ApiResponse(200,{},"User logged Out"))
 })
+
+
 
 export {registerUser,loginUser,logOutUser}
