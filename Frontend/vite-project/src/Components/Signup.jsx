@@ -1,79 +1,109 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const SignupForm = () => {
+export default function Signup() {
+  // State to store form fields
   const [username, setUsername] = useState('');
-  const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullname, setFullname] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ username, fullname, email, password });
+  // Function to handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page reload
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      // Make a POST request to the backend for signup
+      const response = await axios.post('/api/v1/users/register', {
+        username,
+        email,
+        password,
+        fullname
+      });
+
+      // Handle success, such as redirecting to a login page
+      console.log('Signup successful:', response.data);
+      // Redirect to login page or show success message
+    } catch (error) {
+      // Handle error (e.g., user already exists)
+      console.error('Error during signup:', error.response?.data || error.message);                                
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="username">
-          Username
-        </label>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="fullname">
-          Full Name
-        </label>
-        <input
-          type="text"
-          id="fullname"
-          value={fullname}
-          onChange={(e) => setFullname(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="email">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="password">
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        Sign Up
-      </button>
-    </form>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="signupFullname" className="form-label">Full Name</label>
+          <input
+            type="text"
+            className="form-control"
+            id="signupFullname"
+            placeholder="Full Name"
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)} // Update fullname state
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="signupUsername" className="form-label">Username</label>
+          <input
+            type="text"
+            className="form-control"
+            id="signupUsername"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)} // Update username state
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="signupEmail" className="form-label">Email address</label>
+          <input
+            type="email"
+            className="form-control"
+            id="signupEmail"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)} // Update email state
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="signupPassword" className="form-label">Password</label>
+          <input
+            type="password"
+            className="form-control"
+            id="signupPassword"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} // Update password state
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="signupConfirmPassword" className="form-label">Confirm Password</label>
+          <input
+            type="password"
+            className="form-control"
+            id="signupConfirmPassword"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)} // Update confirm password state
+            required
+          />
+        </div>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <button type="submit" className="btn btn-primary">Sign Up</button>
+      </form>
+    </div>
   );
-};
-
-export default SignupForm;
+}
