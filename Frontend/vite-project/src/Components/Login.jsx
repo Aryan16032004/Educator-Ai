@@ -1,51 +1,60 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const LoginForm = () => {
+export default function Login() {
+  // State to store email and password
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ email, password });
+  const navigate = useNavigate();
+
+  // Function to handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevents page reload
+
+    try {
+      // Make a POST request to the backend
+      const response = await axios.post('/api/v1/users/login', { email, password });
+      
+      // Handle success, such as redirecting to a dashboard
+      console.log('Login successful:', response.data.data.user);
+      navigate('/api/v1/dashboard', { state: { userData: response.data.data.user } });
+      // You can redirect using window.location or React Router
+    } catch (error) {
+      // Handle error (e.g., invalid login)
+      console.error('Error during login:', error.response?.data || error.message);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="email">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="password">
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        Log In
-      </button>
-    </form>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="loginEmail" className="form-label">Email address</label>
+          <input
+            type="email"
+            className="form-control"
+            id="loginEmail"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)} // Update email state
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="loginPassword" className="form-label">Password</label>
+          <input
+            type="password"
+            id="loginPassword"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} // Update password state
+            required
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">Login</button>
+      </form>
+    </div>
   );
-};
-
-export default LoginForm;
+}
