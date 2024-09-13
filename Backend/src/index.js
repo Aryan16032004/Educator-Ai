@@ -1,10 +1,10 @@
 import dotenv from "dotenv"
 import connnectDB from "./db/index.js";
 import { app } from "./app.js";
+import cors from 'cors'
 
-dotenv.config({
-    path:'./.env'
-})
+app.use(cors);
+dotenv.config()
 
 connnectDB()
 .then(()=>{

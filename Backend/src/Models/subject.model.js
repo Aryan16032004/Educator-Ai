@@ -24,4 +24,4 @@ const subjectchema = new mongoose.Schema({
     
 },{timestamps:true})
 
-const Subject = mongoose.model('Subject', subjectchema)
+export const Subject = mongoose.model('Subject', subjectchema)
