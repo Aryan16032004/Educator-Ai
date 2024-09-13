@@ -2,7 +2,9 @@ import { asyncHandler } from "../Utils/AsyncHandler.js";
 import { User } from "../Models/user.model.js";
 import { ApiError } from "../Utils/apiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
-
+import { Subject } from "../Models/subject.model.js";
+import { question } from "../Utils/question.js";
+import { separator } from "../Utils/separator.js";
 
 const generateAccessAndRefreshToken = async(userId)=>{
     try {
@@ -158,6 +160,96 @@ const logOutUser = asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,{},"User logged Out"))
 })
 
+const createSubject = asyncHandler(async (req, res) => {
+    const { Subjectname } = req.body; // Subject name from the request body
+    const userId = req.user._id; // Extract the logged-in user from `req.user` (assuming you're using authentication middleware)
 
+    // Check if the subject name is provided
+    if (!Subjectname) {
+        return res.status(400).json({ message: "Subject name is required" });
+    }
 
-export {registerUser,loginUser,logOutUser}
+    // Check if the subject already exists
+    const existingSubject = await Subject.findOne({ Subjectname });
+    if (existingSubject) {
+        return res.status(400).json({ message: "Subject already exists" });
+    }
+
+    // Create a new subject and associate it with the user
+    const newSubject = new Subject({
+        Subjectname,
+        user: userId, // Link the subject with the logged-in user
+    });
+
+    // Save the subject to the database
+    await newSubject.save();
+
+    // Update the user's subjects array by pushing the new subject's ID
+    const user = await User.findById(userId);
+    user.subjects.push(newSubject._id); // Add the new subject to the user's subjects array
+    await user.save({validateBeforeSave: false}); // Save the updated user
+
+    // Respond with the created subject and success message
+    res.status(201).json({
+        message: "Subject created successfully",
+        subject: newSubject,
+    });
+});
+
+const createQuestion =asyncHandler(async(req,res)=>{
+    const { topics } = req.body;
+    if (!topics) {
+        return res.status(400).json({ message: "topics name is required" });
+    }
+
+    const response= await question(topics)
+   
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, {
+           response
+        }, "topics questions")
+    );
+})
+
+const querySeparator = asyncHandler(async(req,res)=>{
+    const {query}= req.body
+    if (!query ){
+        return res.status(400).json({ message: "queryis required" });
+    }
+
+    const response= await separator(query)
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, {
+           response
+        }, "response generated")
+    );
+
+})
+
+const getSubject=asyncHandler(async(req,res)=>{
+
+    try {
+        // Find the user by ID and populate the 'subjects' array with the corresponding Subject documents
+        const user = await User.findById(req.user._id).populate('subjects', 'Subjectname');
+    
+        // Print the subject names
+        if (user && user.subjects.length > 0) {
+          user.subjects.forEach((subject) => {
+            console.log(subject.Subjectname); // Print each subject's name
+            return  res.status(200).json({ message: "subject name", subject: subject.Subjectname });
+
+          });
+        } else {
+          console.log('No subjects found for this user.');
+        }
+      } catch (error) {
+        console.error('Error fetching subjects:', error);
+      }
+})
+export {registerUser,loginUser,logOutUser,createSubject,createQuestion,querySeparator,getSubject}

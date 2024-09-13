@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const subjectchema = new mongoose.Schema({
-    name:{
+    Subjectname:{
         type:String,
         required:true,
         unique:true,
@@ -24,4 +24,4 @@ const subjectchema = new mongoose.Schema({
     
 },{timestamps:true})
 
-const Subject = mongoose.model('Subject', subjectchema)
+export const Subject = mongoose.model('Subject', subjectchema)
