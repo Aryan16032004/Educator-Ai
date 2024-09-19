@@ -1,24 +1,20 @@
+
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate,Link } from 'react-router-dom';
 
-export default function Signup() {
-  // State to store form fields
+const SignupForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [fullname, setFullname] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
-  // Function to handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
 
     // Check if passwords match
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
 
     try {
       // Make a POST request to the backend for signup
@@ -26,84 +22,84 @@ export default function Signup() {
         username,
         email,
         password,
-        fullname
+        fullname,
       });
 
       // Handle success, such as redirecting to a login page
       console.log('Signup successful:', response.data);
-      // Redirect to login page or show success message
+      navigate('/login'); // Navigate to login page on successful signup
     } catch (error) {
-      // Handle error (e.g., user already exists)
-      console.error('Error during signup:', error.response?.data || error.message);                                
+      // Handle error
+      console.error('Error during signup:', error.response?.data || error.message);
+      setError('An error occurred during signup');
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="signupFullname" className="form-label">Full Name</label>
-          <input
-            type="text"
-            className="form-control"
-            id="signupFullname"
-            placeholder="Full Name"
-            value={fullname}
-            onChange={(e) => setFullname(e.target.value)} // Update fullname state
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="signupUsername" className="form-label">Username</label>
-          <input
-            type="text"
-            className="form-control"
-            id="signupUsername"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)} // Update username state
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="signupEmail" className="form-label">Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            id="signupEmail"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} // Update email state
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="signupPassword" className="form-label">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="signupPassword"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} // Update password state
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="signupConfirmPassword" className="form-label">Confirm Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="signupConfirmPassword"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)} // Update confirm password state
-            required
-          />
-        </div>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <button type="submit" className="btn btn-primary">Sign Up</button>
-      </form>
+    <div className='min-h-screen  bg-gradient-to-r from-blue-500 to-blue-700 flex items-center justify-center'>
+      <div className='bg-white p-8 rounded-lg shadow-lg w-full max-w-md mt-5'>
+        <h1 className='text-2xl font-bold mb-6 text-center text-gray-800'>Sign Up</h1>
+        {error && <p className='text-red-500 mb-4'>{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className='mb-4'>
+            <label className='block text-gray-700'>Full Name</label>
+            <input
+              type='text'
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
+              className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500'
+              required
+            />
+          </div>
+          <div className='mb-4'>
+            <label className='block text-gray-700'>Username</label>
+            <input
+              type='text'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500'
+              required
+            />
+          </div>
+          <div className='mb-4'>
+            <label className='block text-gray-700'>Email</label>
+            <input
+              type='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500'
+              required
+            />
+          </div>
+          <div className='mb-4'>
+            <label className='block text-gray-700'>Password</label>
+            <input
+              type='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500'
+              required
+            />
+          </div>
+         
+          <button
+            type='submit'
+            className='w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300'>
+            Sign Up
+          </button>
+
+          <div className='flex justify-center align-items-center gap-2 mt-4'>
+            <p className='inline-block'>Already Registered?</p>
+            <Link to="/login">
+              <p className='inline-block text-blue-600 hover:underline transition duration-300'>
+                Login Here!
+              </p>
+            </Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
-}
+};
+
+export default SignupForm;

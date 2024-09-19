@@ -3,7 +3,7 @@ import axios from 'axios'
 // Replace with your actual API key and external user ID
 const apiKey = 'vFKHtSB2Ckc0GJaKKUUtrRqjakhsPQ53';
 const externalUserId = 'user';
-const extraQuery = `` 
+ 
 // Function to create a chat session
 async function createChatSession() {
   try {

@@ -36,12 +36,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
    const { fullname, username, email, password } = req.body
 
-   //    console.log(req.body);
+      console.log(req.body);
 
-   // //    console.log("email: " ,email);
-   // // if(fullname === ""){
-   // //     throw new ApiError(400,"fullname is required")
-   // // }
    if (
       [fullname, email, username, password].some((field) => field?.trim() === "")
    ) {
@@ -57,11 +53,6 @@ const registerUser = asyncHandler(async (req, res) => {
    if (existedUser) {
       throw new ApiError(409, "User already existed")
    }
-
-   // // //    console.log(avatar);
-
-
-
 
    const user = await User.create({
       fullname,
@@ -159,36 +150,34 @@ const logOutUser = asyncHandler(async (req, res) => {
 })
 
 const createSubject = asyncHandler(async (req, res) => {
-    const { Subjectname } = req.body; // Subject name from the request body
-    const userId = req.user._id; // Extract the logged-in user from `req.user` (assuming you're using authentication middleware)
-
-    // Check if the subject name is provided
+    const { Subjectname } = req.body; 
+    const userId = req.user._id; 
+    
     if (!Subjectname) {
         return res.status(400).json({ message: "Subject name is required" });
     }
 
-<<<<<<< HEAD
-    // Check if the subject already exists
+
     const existingSubject = await Subject.findOne({ Subjectname });
     if (existingSubject) {
         return res.status(400).json({ message: "Subject already exists" });
     }
 
-    // Create a new subject and associate it with the user
+
     const newSubject = new Subject({
         Subjectname,
-        user: userId, // Link the subject with the logged-in user
+        user: userId, 
     });
 
-    // Save the subject to the database
+    
     await newSubject.save();
 
-    // Update the user's subjects array by pushing the new subject's ID
+    
     const user = await User.findById(userId);
-    user.subjects.push(newSubject._id); // Add the new subject to the user's subjects array
-    await user.save({validateBeforeSave: false}); // Save the updated user
+    user.subjects.push(newSubject._id); 
+    await user.save({validateBeforeSave: false}); 
 
-    // Respond with the created subject and success message
+   
     res.status(201).json({
         message: "Subject created successfully",
         subject: newSubject,
@@ -234,24 +223,22 @@ const querySeparator = asyncHandler(async(req,res)=>{
 const getSubject=asyncHandler(async(req,res)=>{
 
     try {
-        // Find the user by ID and populate the 'subjects' array with the corresponding Subject documents
         const user = await User.findById(req.user._id).populate('subjects', 'Subjectname');
     
         // Print the subject names
         if (user && user.subjects.length > 0) {
-          user.subjects.forEach((subject) => {
-            console.log(subject.Subjectname); // Print each subject's name
-            return  res.status(200).json({ message: "subject name", subject: subject.Subjectname });
-
-          });
-        } else {
+            const subjectNames = user.subjects.map((subject) => subject.Subjectname);
+            return res.status(200).json({ subjectNames});
+        }
+         else {
           console.log('No subjects found for this user.');
+          return res.status(200).json({ subjects: [] });
         }
       } catch (error) {
         console.error('Error fetching subjects:', error);
       }
 })
 export {registerUser,loginUser,logOutUser,createSubject,createQuestion,querySeparator,getSubject}
-=======
-export { registerUser, loginUser, logOutUser }
->>>>>>> 93b0111130dbb5b26a9781c6ed6846c602ee1cdb
+// =======
+// export { registerUser, loginUser, logOutUser }
+// >>>>>>> 93b0111130dbb5b26a9781c6ed6846c602ee1cdb
