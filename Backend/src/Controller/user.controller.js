@@ -156,39 +156,36 @@ const logOutUser = asyncHandler(async (req, res) => {
 })
 
 const createSubject = asyncHandler(async (req, res) => {
-    const { Subjectname } = req.body; 
-    const userId = req.user._id; 
-    
-    if (!Subjectname) {
-        return res.status(400).json({ message: "Subject name is required" });
-    }
-
-
-    const existingSubject = await Subject.findOne({ Subjectname });
-    if (existingSubject) {
-        return res.status(400).json({ message: "Subject already exists" });
-    }
-
-
-    const newSubject = new Subject({
-        Subjectname,
-        user: userId, 
-    });
-
-    
-    await newSubject.save();
-
-    
-    const user = await User.findById(userId);
-    user.subjects.push(newSubject._id); 
-    await user.save({validateBeforeSave: false}); 
-
-   
-    res.status(201).json({
-        message: "Subject created successfully",
-        subject: newSubject,
-    });
-});
+   const { Subjectname } = req.body;
+   const userId = req.user._id;
+ 
+   if (!Subjectname) {
+     return res.status(400).json({ message: 'Subject name is required' });
+   }
+ 
+   // Check if the subject already exists for the same user
+   const existingSubject = await Subject.findOne({ Subjectname, user: userId });
+   if (existingSubject) {
+     return res.status(400).json({ message: 'Subject already exists for the user' });
+   }
+ 
+   const newSubject = new Subject({
+     Subjectname,
+     user: userId,
+   });
+ 
+   await newSubject.save();
+ 
+   // Add the subject ID to the user's subjects array
+   const user = await User.findById(userId);
+   user.subjects.push(newSubject._id);
+   await user.save({ validateBeforeSave: false });
+ 
+   res.status(201).json({
+     message: 'Subject created successfully',
+     subject: newSubject,
+   });
+ });
 
 const createQuestion =asyncHandler(async(req,res)=>{
     const { topics } = req.body;

@@ -20,14 +20,14 @@ const LoginForm = () => {
         password,
       });
 
-      const { accessToken, refreshToken } = response.data;
+      const { accessToken, refreshToken } = response.data.data;
 
       // Store tokens in cookies
       Cookies.set('accessToken', accessToken, { expires: 1 });
       Cookies.set('refreshToken', refreshToken, { expires: 10 });
 
       // Update authentication state
-      login();
+      login(accessToken);
 
       // Navigate to a protected route (e.g., dashboard)
       navigate('/');

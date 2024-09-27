@@ -6,7 +6,7 @@ import { useModal } from '../Context/ModalContext.jsx';
 const Header = () => {
     const { openModal } = useModal();
 
-  const { isAuthenticated,login, logout ,loading} = useContext(AuthContext);
+  const { isAuthenticated, logout ,loading} = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout =() => {
