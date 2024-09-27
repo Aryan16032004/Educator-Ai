@@ -5,11 +5,12 @@ import { ApiResponse } from "../Utils/ApiResponse.js";
 import { Subject } from "../Models/subject.model.js";
 import { question } from "../Utils/question.js";
 import { separator } from "../Utils/separator.js";
+import jwt from "jsonwebtoken"
 
 const generateAccessAndRefreshToken = async (userId) => {
    try {
       const user = await User.findById(userId);
-      console.log(user);
+      // console.log(user);
 
       if (!user) {
          throw new ApiError(404, "User not found");
@@ -17,13 +18,15 @@ const generateAccessAndRefreshToken = async (userId) => {
 
       const accessToken = user.generateAccessToken()
       const refreshToken = user.generateRefreshToken()
-      console.log(accessToken);
-      console.log(refreshToken);
+      console.log("access and refresh token generated");
+      
+      // console.log(accessToken);
+      // console.log(refreshToken);
 
 
       user.refreshToken = refreshToken
       await user.save({ validateBeforeSave: false })
-      console.log(user);
+      // console.log(user);
 
       return { accessToken, refreshToken }
 
@@ -36,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
    const { fullname, username, email, password } = req.body
 
-      console.log(req.body);
+      // console.log(req.body);
 
    if (
       [fullname, email, username, password].some((field) => field?.trim() === "")
@@ -78,7 +81,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
    // Extract user credentials from request body
    const { email, password } = await req.body;
-   console.log(req.body);
+   // console.log(req.body);
 
 
    // Ensure either username or email is provided
@@ -111,6 +114,8 @@ const loginUser = asyncHandler(async (req, res) => {
       secure: true, // Consider making this conditional based on environment (e.g., secure for production only)
    };
 
+   console.log("user logged in");
+   
    return res
       .status(200)
       .cookie("accessToken", accessToken, options)
@@ -141,7 +146,8 @@ const logOutUser = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true
    }
-
+   console.log("user logged out");
+   
    return res
       .status(200)
       .clearCookie("accessToken", options)
@@ -209,6 +215,8 @@ const querySeparator = asyncHandler(async(req,res)=>{
     }
 
     const response= await separator(query)
+   //  console.log(respnse.json());
+    
 
     return res
     .status(200)
@@ -238,7 +246,23 @@ const getSubject=asyncHandler(async(req,res)=>{
         console.error('Error fetching subjects:', error);
       }
 })
-export {registerUser,loginUser,logOutUser,createSubject,createQuestion,querySeparator,getSubject}
+
+
+const verifyToken=asyncHandler(async(req,res)=>{
+   const token = req.headers.authorization?.split(' ')[1];
+
+   if (!token) {
+     return res.status(401).json({ message: 'No token provided' });
+   }
+ 
+   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+     if (err) {
+       return res.status(401).json({ message: 'Invalid or expired token' });
+     }
+     res.status(200).json({ message: 'Token is valid', user: decoded });
+   });
+})
+export {registerUser,loginUser,logOutUser,createSubject,createQuestion,querySeparator,getSubject,verifyToken}
 // =======
 // export { registerUser, loginUser, logOutUser }
 // >>>>>>> 93b0111130dbb5b26a9781c6ed6846c602ee1cdb

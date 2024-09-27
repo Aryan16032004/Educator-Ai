@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { createQuestion, createSubject, getSubject, logOutUser,loginUser,querySeparator,registerUser } from "../Controller/user.controller.js";
+import { createQuestion, createSubject, getSubject, logOutUser,loginUser,querySeparator,registerUser, verifyToken } from "../Controller/user.controller.js";
 import { verifyJWT } from "../Middleware/auth.middleware.js";
 
 
@@ -17,11 +17,12 @@ router.route("/logout").post(verifyJWT ,logOutUser)
 
 router.route("/createSubject").post(verifyJWT ,createSubject)
 
+router.route("/getSubs").get(verifyJWT ,getSubject)
+
 router.route("/question").post(verifyJWT ,createQuestion)
 
 router.route("/separator").post(verifyJWT ,querySeparator)
 
-router.route("/getSubs").get(verifyJWT ,getSubject)
-
+router.route("/verify-token").get(verifyToken)
 
 export default router

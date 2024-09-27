@@ -4,7 +4,6 @@ const subjectchema = new mongoose.Schema({
     Subjectname:{
         type:String,
         required:true,
-        unique:true,
         lowercase:true,
         trim:true,
         index:true

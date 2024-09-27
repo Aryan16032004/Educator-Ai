@@ -1,34 +1,39 @@
-
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { AuthContext } from '../Context/AuthContext.jsx'; // Import the AuthContext
 
-const SignupForm = () => {
-
+const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const { login } = useContext(AuthContext); // Get login function from context
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if passwords match
-
     try {
-      // Make a POST request to the backend for signup
       const response = await axios.post('/api/v1/users/login', {
         email,
         password,
       });
 
-      // Handle success, such as redirecting to a login page
-      console.log('Login successful:', response.data);
-      navigate('/dashboard'); // Navigate to login page on successful signup
+      const { accessToken, refreshToken } = response.data;
+
+      // Store tokens in cookies
+      Cookies.set('accessToken', accessToken, { expires: 1 });
+      Cookies.set('refreshToken', refreshToken, { expires: 10 });
+
+      // Update authentication state
+      login();
+
+      // Navigate to a protected route (e.g., dashboard)
+      navigate('/');
     } catch (error) {
-      // Handle error
       console.error('Error during login:', error.response?.data || error.message);
-      setError('An error occurred during login');
+      setError('Invalid credentials, please try again.');
     }
   };
 
@@ -58,16 +63,14 @@ const SignupForm = () => {
               required
             />
           </div>
-         
           <button
             type='submit'
             className='w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300'>
-           Log In
+            Log In
           </button>
-
           <div className='flex justify-center align-items-center gap-2 mt-4'>
-            <p className='inline-block'>Not  Registered?</p>
-            <Link to="/">
+            <p className='inline-block'>Not Registered?</p>
+            <Link to="/signup">
               <p className='inline-block text-blue-600 hover:underline transition duration-300'>
                 Signup Here!
               </p>
@@ -79,4 +82,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default LoginForm;

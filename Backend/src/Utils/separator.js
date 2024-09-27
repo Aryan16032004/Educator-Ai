@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Replace with your actual API key and external user ID
-const apiKey = 'FURA6jYBI37dIbTf8ERCoISZ66gQYQtl';
+const apiKey = 'vFKHtSB2Ckc0GJaKKUUtrRqjakhsPQ53';
 const externalUserId = 'User1';
 
 
@@ -70,11 +70,11 @@ async function submitQuery(sessionId,myquery) {
 const separator = async (myquery)=> {
     try {
         const sessionId = await createChatSession();
-        console.log('Session ID:', sessionId);
+        // console.log('Session ID:', sessionId);
         const queryResponse = await submitQuery(sessionId,myquery);
-        console.log('Query Response:', queryResponse);
+        // console.log('Query Response:', queryResponse);
         const arr1 = queryResponse.data.answer.split('^');
-        console.log(arr1);
+        // console.log(arr1);
         const result = {};
 
         arr1.forEach(item => {
@@ -82,7 +82,7 @@ const separator = async (myquery)=> {
             result[unit.replace(/([A-Z]+)(\d*)/, '$1 $2').trim()] = topics;
         });
 
-        console.log(result);
+        // console.log(result);
         return result
     } catch (error) {
         console.error('Error in main function:', error);

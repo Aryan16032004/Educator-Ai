@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
-import { useModal } from '../ModalContext.jsx';
+import { useModal } from '../Context/ModalContext.jsx';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -69,7 +70,7 @@ function Dashboard() {
   };
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: false,
     speed: 500,
     slidesToShow: 4,
@@ -84,9 +85,11 @@ function Dashboard() {
         <Slider {...settings}>
           {subjects.map((subject, index) => (
             <div key={index} className="p-2">
-              <div className="w-full h-32 border border-solid border-black flex items-center justify-center rounded-lg">
+              <Link to="/mocktest">
+              <div className="w-full h-32 border border-solid border-black flex items-center justify-center rounded-lg" >
                 <span>{subject}</span>
               </div>
+              </Link>
             </div>
           ))}
         </Slider>
@@ -110,8 +113,9 @@ function Dashboard() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={()=>closeModal()}>
-          <div className="bg-white p-8 rounded-lg shadow-lg">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+           {/* onClick={()=>closeModal()} implement it  */}
+          <div className="bg-white p-8 rounded-lg shadow-lg " >
             <h2 className="text-lg mb-4">Enter Subject Name</h2>
             <input
               type="text"

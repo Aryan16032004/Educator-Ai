@@ -1,20 +1,29 @@
-import React from 'react'
-import { ModalProvider } from './ModalContext.jsx'
-import {Outlet} from 'react-router-dom'
-import Header from './Components/Header'
+import React, { useContext } from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
+import { ModalProvider } from './Context/ModalContext.jsx';
+import Header from './Components/Header';
+import { AuthProvider, AuthContext } from './Context/AuthContext.jsx';
+
+// ProtectedRoute component to handle protected routes
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useContext(AuthContext);
+
+  if (loading) return <p>Loading...</p>;
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
 
 function Layout() {
   return (
     <div>
-      <ModalProvider>
-      <Header/>
-      <Outlet/>
-      </ModalProvider>
+      <AuthProvider>
+        <ModalProvider>
+          <Header />
+          <Outlet />
+        </ModalProvider>
+      </AuthProvider>
     </div>
-  )
+  );
 }
 
-export default Layout
-
-
-// can do the same thing in app.jsx 
+export { Layout, ProtectedRoute };
