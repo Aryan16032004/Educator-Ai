@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import axios from 'axios';
 
 // Create the AuthContext
@@ -14,8 +13,8 @@ export const AuthProvider = ({ children }) => {
     const validateToken = async () => {
       console.log("Validating token...");
       try {
-        const accessToken = Cookies.get('accessToken');
-        console.log("AccessToken from cookie in useEffect:", accessToken);  // Check the token here
+        const accessToken = localStorage.getItem('accessToken');
+        console.log("AccessToken from localStorage in useEffect:", accessToken);  // Check the token here
 
         if (accessToken) {
           console.log("Sending request to validate token...");
@@ -44,15 +43,15 @@ export const AuthProvider = ({ children }) => {
   // Login function to set the auth state
   const login = (token) => {
     console.log("Login successful, setting token and state.");
-    Cookies.set('accessToken', token, { sameSite: 'Strict', secure: true });
-    console.log("Access token set in cookies:", Cookies.get('accessToken'));  // Confirm if set correctly
+    localStorage.setItem('accessToken', token);
+    console.log("Access token set in localStorage:", localStorage.getItem('accessToken'));  // Confirm if set correctly
     setIsAuthenticated(true);
   };
 
-  // Logout function to clear cookies and set auth state
+  // Logout function to clear localStorage and set auth state
   const logout = async () => {
     try {
-      Cookies.remove('accessToken');
+      localStorage.removeItem('accessToken');
       setIsAuthenticated(false);
       await axios.post('/api/v1/users/logout');
     } catch (error) {

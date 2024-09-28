@@ -23,8 +23,11 @@ const LoginForm = () => {
       const { accessToken, refreshToken } = response.data.data;
 
       // Store tokens in cookies
-      Cookies.set('accessToken', accessToken, { expires: 1 });
-      Cookies.set('refreshToken', refreshToken, { expires: 10 });
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+
+      console.log("Access Token from localStorage:", localStorage.getItem('accessToken'));
+      console.log("Refresh Token from localStorage:", localStorage.getItem('refreshToken'));
 
       // Update authentication state
       login(accessToken);

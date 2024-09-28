@@ -36,7 +36,7 @@ async function submitQuery(sessionId,extraQuery) {
       `https://api.on-demand.io/chat/v1/sessions/${sessionId}/query`,
       {
         endpointId: 'predefined-openai-gpt4o',
-        query: `give ten mcq on these topics in json fromat as i have to show it in frontend ${extraQuery}`,
+        query: `Create 10 MCQ Questions /n Format of output should be -<Question1>*<option1>*<option2>*<option3>*<option4>*<correct answer>#<Question2>*<option1>*<option2>*<option3>*<option4>*<correct answer> ${extraQuery}`,
         pluginIds: ['plugin-1712327325', 'plugin-1713962163'],
         responseMode: 'sync'
       },

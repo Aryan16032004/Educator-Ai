@@ -6,6 +6,7 @@ import './index.css';
 import Login from './Components/Login.jsx';
 import Signup from './Components/Signup.jsx';
 import Dashboard from './Components/Dashboard.jsx';
+import Syllabus from './Components/Syllabus.jsx';
 import MockTest from './Components/MockTest.jsx';
 import { Layout, ProtectedRoute } from './Layout.jsx'; // Import Layout and ProtectedRoute
 
@@ -27,14 +28,28 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path='mocktest'
+        path='syllabus'
         element={
           <ProtectedRoute>
-            <MockTest />
+            <Syllabus/>
           </ProtectedRoute>
         }
       />
+
+        <Route
+        path='mocktest'
+        element={
+          <ProtectedRoute>
+            <MockTest/>
+          </ProtectedRoute>
+        }
+      />
+      
     </Route>
+
+    
+
+    
   )
 );
 

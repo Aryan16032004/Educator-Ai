@@ -252,13 +252,15 @@ const verifyToken=asyncHandler(async(req,res)=>{
      return res.status(401).json({ message: 'No token provided' });
    }
  
-   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
      if (err) {
        return res.status(401).json({ message: 'Invalid or expired token' });
      }
      res.status(200).json({ message: 'Token is valid', user: decoded });
    });
 })
+
+
 export {registerUser,loginUser,logOutUser,createSubject,createQuestion,querySeparator,getSubject,verifyToken}
 // =======
 // export { registerUser, loginUser, logOutUser }

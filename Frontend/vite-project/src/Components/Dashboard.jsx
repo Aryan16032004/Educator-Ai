@@ -85,7 +85,7 @@ function Dashboard() {
         <Slider {...settings}>
           {subjects.map((subject, index) => (
             <div key={index} className="p-2">
-              <Link to="/mocktest">
+              <Link to="/syllabus">
               <div className="w-full h-32 border border-solid border-black flex items-center justify-center rounded-lg" >
                 <span>{subject}</span>
               </div>
