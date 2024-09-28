@@ -5,8 +5,9 @@ function Syllabus() {
   const [syllabus, setSyllabus] = useState('');
   const [responseData, setResponseData] = useState(null);
   const [questionsData, setQuestionsData] = useState(null);
-  const [selectedAnswers, setSelectedAnswers] = useState({}); // State to track selected answers
-  const [feedback, setFeedback] = useState({}); // State to track feedback messages
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [feedback, setFeedback] = useState({});
+  const [topicData, setTopicData] = useState(''); // New state to keep track of the current topic
 
   // Handle the textarea change
   const handleInputChange = (e) => {
@@ -32,18 +33,20 @@ function Syllabus() {
   };
 
   // Function to fetch questions based on the topic
-  const fetchQuestions = async (topics) => {
+  const fetchQuestions = async (topics, append = false) => {
     try {
       const response = await axios.post('/api/v1/users/question', { topics });
-      console.log(response);
-
       if (response.data.isSuccessful) {
         const rawData = response.data.data.response.data.answer;
-        console.log("questions", rawData);
-
         const questions = rawData.split('#').filter(q => q.trim() !== '');
         const formattedQuestions = formatQuestions(questions);
-        setQuestionsData(formattedQuestions);
+
+        // If append is true, append new questions to the existing list
+        if (append) {
+          setQuestionsData((prevData) => ({ ...prevData, ...formattedQuestions }));
+        } else {
+          setQuestionsData(formattedQuestions);
+        }
       } else {
         alert('Failed to fetch questions.');
       }
@@ -77,7 +80,6 @@ function Syllabus() {
   // Handle answer selection
   const handleOptionChange = (questionKey, selectedOption) => {
     setSelectedAnswers(prev => ({ ...prev, [questionKey]: selectedOption }));
-    
     const question = questionsData[questionKey];
     if (selectedOption === question.correct_answer) {
       setFeedback(prev => ({ ...prev, [questionKey]: 'Correct answer!!' }));
@@ -95,14 +97,14 @@ function Syllabus() {
         {Object.entries(responseData).length > 0 ? (
           Object.entries(responseData).map(([unit, topics], unitIndex) => (
             <div key={unitIndex} className='mb-6'>
-              <h2 className='text-xl font-bold mb-2'>{unit}</h2>
+              <h2 className='text-xl font-bold mb-2 cursor-pointer' onClick={() => { fetchQuestions(topics); setTopicData(topics); }} >{unit}</h2>
               <h3 className='text-lg font-semibold mb-1'>Topics:</h3>
               <ul className='list-decimal list-inside'>
                 {topics.map((topic, idx) => (
                   <li 
                     key={idx} 
                     className='text-gray-800 cursor-pointer mb-1'
-                    onClick={() => fetchQuestions(topic)} // Call fetchQuestions on click
+                    onClick={() => { fetchQuestions(topic); setTopicData(topic); }} // Set the clicked topic to state
                   >
                     {topic}
                   </li>
@@ -166,6 +168,12 @@ function Syllabus() {
             {feedback[key] && <div className='text-sm text-gray-600 mt-2'>{feedback[key]}</div>}
           </fieldset>
         ))}
+        {/* More Questions Button */}
+        <button
+          onClick={() => {fetchQuestions(topicData, true); setFeedback("")}} // Pass `true` to append more questions
+          className=' px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'>
+          More Questions
+        </button>
       </div>
     );
   };

@@ -26,8 +26,8 @@ const LoginForm = () => {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
 
-      console.log("Access Token from localStorage:", localStorage.getItem('accessToken'));
-      console.log("Refresh Token from localStorage:", localStorage.getItem('refreshToken'));
+      // console.log("Access Token from localStorage:", localStorage.getItem('accessToken'));
+      // console.log("Refresh Token from localStorage:", localStorage.getItem('refreshToken'));
 
       // Update authentication state
       login(accessToken);

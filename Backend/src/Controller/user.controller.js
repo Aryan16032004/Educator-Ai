@@ -18,7 +18,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 
       const accessToken = user.generateAccessToken()
       const refreshToken = user.generateRefreshToken()
-      console.log("access and refresh token generated");
+      // console.log("access and refresh token generated");
       
       // console.log(accessToken);
       // console.log(refreshToken);
@@ -114,7 +114,7 @@ const loginUser = asyncHandler(async (req, res) => {
       secure: true, // Consider making this conditional based on environment (e.g., secure for production only)
    };
 
-   console.log("user logged in");
+   // console.log("user logged in");
    
    return res
       .status(200)
@@ -146,7 +146,7 @@ const logOutUser = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true
    }
-   console.log("user logged out");
+   // console.log("user logged out");
    
    return res
       .status(200)

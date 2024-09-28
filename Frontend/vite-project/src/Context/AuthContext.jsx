@@ -11,19 +11,19 @@ export const AuthProvider = ({ children }) => {
   // Check authentication state on component mount
   useEffect(() => {
     const validateToken = async () => {
-      console.log("Validating token...");
+      // console.log("Validating token...");
       try {
         const accessToken = localStorage.getItem('accessToken');
-        console.log("AccessToken from localStorage in useEffect:", accessToken);  // Check the token here
+        // console.log("AccessToken from localStorage in useEffect:", accessToken);  // Check the token here
 
         if (accessToken) {
-          console.log("Sending request to validate token...");
+          // console.log("Sending request to validate token...");
           const response = await axios.get('/api/v1/users/verify-token', {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           });
-          console.log("Token validation response:", response.data);
+          // console.log("Token validation response:", response.data);
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
       } finally {
         setLoading(false);
-        console.log("Loading state set to false, isAuthenticated:", isAuthenticated);
+        // console.log("Loading state set to false, isAuthenticated:", isAuthenticated);
       }
     };
 
@@ -42,9 +42,9 @@ export const AuthProvider = ({ children }) => {
 
   // Login function to set the auth state
   const login = (token) => {
-    console.log("Login successful, setting token and state.");
+    // console.log("Login successful, setting token and state.");
     localStorage.setItem('accessToken', token);
-    console.log("Access token set in localStorage:", localStorage.getItem('accessToken'));  // Confirm if set correctly
+    // console.log("Access token set in localStorage:", localStorage.getItem('accessToken'));  // Confirm if set correctly
     setIsAuthenticated(true);
   };
 

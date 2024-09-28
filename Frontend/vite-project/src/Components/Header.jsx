@@ -20,17 +20,16 @@ const Header = () => {
 
   return (
     <header className="bg-white border-gray-200 py-3 px-6 flex justify-between justify-center items-center">
-      <Link to="/dashboard" className="flex items-center">
+      <div  className="flex items-center">
                         <img
                             src="https://alexharkness.com/wp-content/uploads/2020/06/logo-2.png"
                             className="mr-3 h-12"
                             alt="Logo"
                         />
-                    </Link>
+                    </div>
       <nav>
 
         <Link to="/" className="px-3 hover:underline">Home</Link>
-        <Link to="/profile" className="px-3 hover:underline">Profile</Link>
 
         {isAuthenticated ? (
           <>

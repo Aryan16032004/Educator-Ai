@@ -61,7 +61,7 @@ const question = async (extraQuery)=> {
   try {
     const sessionId = await createChatSession();
     const queryResponse = await submitQuery(sessionId,extraQuery);
-    console.log('Query Response:', queryResponse);
+    // console.log('Query Response:', queryResponse);
     return queryResponse
   } catch (error) {
     console.error('Error in main function:', error);

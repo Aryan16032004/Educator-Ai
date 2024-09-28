@@ -26,7 +26,7 @@ const SignupForm = () => {
       });
 
       // Handle success, such as redirecting to a login page
-      console.log('Signup successful:', response.data);
+      // console.log('Signup successful:', response.data);
       navigate('/login'); // Navigate to login page on successful signup
     } catch (error) {
       // Handle error
